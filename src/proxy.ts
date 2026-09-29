@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: { headers: request.headers },
   })
@@ -30,8 +30,7 @@ export async function middleware(request: NextRequest) {
   // Silently check if they have an active session in the background
   const { data: { user } } = await supabase.auth.getUser()
 
-  // ZERO-FLASH ROUTING: If they are logged in and trying to visit the homepage ('/'),
-  // instantly reroute them to the dashboard before the homepage even loads.
+  // ZERO-FLASH ROUTING
   if (user && request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
