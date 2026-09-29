@@ -25,7 +25,7 @@ export default function SecretFactory() {
         {/* This is the magic window (iframe) that brings the free AI into your site */}
         <div className="w-full flex-grow rounded-2xl overflow-hidden border-2 border-gray-800 shadow-[0_0_50px_rgba(0,255,100,0.1)]">
           <iframe
-            src="https://huggingface.co/spaces/huggingface-projects/QR-code-AI-art-generator?__theme=dark"
+            src="https://huggingface-projects-qr-code-ai-art-generator.hf.space?__theme=dark"
             frameBorder="0"
             className="w-full h-full min-h-[800px]"
             allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; microphone; midi; payment; vr"
