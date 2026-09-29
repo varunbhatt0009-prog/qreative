@@ -85,7 +85,7 @@ export default function Home() {
             
             <div className={`bg-white p-3 rounded-2xl transition-all duration-700 ${url.length > 0 ? 'blur-md scale-95 opacity-50' : 'blur-none scale-100 opacity-100'}`}>
               <QRCodeSVG 
-                value={url || 'https://qreative.com'} 
+                value={url || 'qreativeapp.vercel.app'} 
                 size={160}
                 level="H"
                 includeMargin={false}

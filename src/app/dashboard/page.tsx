@@ -45,7 +45,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
   return (
     <div className="min-h-screen bg-[#050505] text-white font-sans">
       
-      {/* UPGRADED NAVIGATION BAR */}
       <nav className="w-full border-b border-gray-900 p-4 flex justify-between items-center bg-black sticky top-0 z-50">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2">
@@ -53,7 +52,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
             <span className="font-semibold text-lg tracking-tight hidden sm:block">Qreative</span>
           </div>
           
-          {/* NEW: Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-6 text-sm font-semibold">
             <Link href="/" className="text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
               <HomeIcon size={16} /> Home
@@ -68,8 +66,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
         </div>
 
         <div className="flex items-center gap-4">
-          
-          {/* NEW: Limited Access Badge for New / Free Trial Users */}
           {!profile?.is_premium && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-950/40 border border-yellow-900/50 rounded-lg text-yellow-500 text-xs font-bold uppercase tracking-wider shadow-[0_0_10px_rgba(234,179,8,0.1)]">
               <Lock size={12} /> Limited Access
@@ -85,7 +81,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
         </div>
       </nav>
 
-      {/* MAIN DASHBOARD CONTENT */}
       <main className="max-w-6xl mx-auto p-6 mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
         
         <div className="md:col-span-1 space-y-6">
@@ -129,7 +124,7 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
                     <div className="bg-white p-2 rounded-xl shrink-0">
                       <QRCodeSVG 
                         id={`qr-${code.safe_scan_code}`}
-                        value={`http://localhost:3000/s/${code.safe_scan_code}`} 
+                        value={`https://qreativeapp.vercel.app/s/${code.safe_scan_code}`} 
                         size={80}
                         level="H"
                         includeMargin={false}
@@ -143,8 +138,8 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
                         <span className="text-gray-500 text-xs font-mono">ID: {code.safe_scan_code}</span>
                       </div>
                       <p className="text-white font-medium truncate mb-1">{code.destination_url}</p>
-                      <a href={`http://localhost:3000/s/${code.safe_scan_code}`} target="_blank" rel="noreferrer" className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors">
-                        <LinkIcon size={12} /> localhost:3000/s/{code.safe_scan_code}
+                      <a href={`https://qreativeapp.vercel.app/s/${code.safe_scan_code}`} target="_blank" rel="noreferrer" className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors">
+                        <LinkIcon size={12} /> qreativeapp.vercel.app/s/{code.safe_scan_code}
                       </a>
                     </div>
                   </div>
