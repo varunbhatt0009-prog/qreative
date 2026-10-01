@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link2, ShieldCheck, Lock, ArrowRight, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import Footer from '@/components/Footer'
 
 const Q_LOGO = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='black'/%3E%3Ctext x='50' y='74' font-family='sans-serif' font-size='70' font-weight='900' fill='white' text-anchor='middle'%3EQ%3C/text%3E%3C/svg%3E"
 
@@ -20,8 +21,7 @@ export default function Home() {
   }
 
   return (
-    // Removed 'overflow-hidden' and 'min-h-screen' so the page can scroll down to the global footer naturally
-    <div className="flex flex-col items-center bg-[#050505] text-white font-sans selection:bg-green-900 selection:text-green-400 relative w-full pb-20">
+    <div className="flex flex-col items-center bg-[#050505] text-white font-sans selection:bg-green-900 selection:text-green-400 relative w-full min-h-screen">
       
       <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-green-600/10 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -38,7 +38,7 @@ export default function Home() {
         </div>
       </nav>
 
-      <main className="flex-1 w-full max-w-5xl px-6 py-16 flex flex-col items-center justify-center relative z-10 min-h-[80vh]">
+      <main className="flex-1 w-full max-w-5xl px-6 py-16 flex flex-col items-center justify-center relative z-10">
         
         <div className="text-center mb-8 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-950/40 border border-green-900/50 text-green-400 text-xs font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(34,197,94,0.1)]">
@@ -111,6 +111,8 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   )
 }
