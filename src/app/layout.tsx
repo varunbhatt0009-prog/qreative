@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,13 +17,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google AdSense Verification Script */}
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4259596276772805"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        {/* Google AdSense Meta Tag Verification */}
+        <meta name="google-adsense-account" content="ca-pub-4259596276772805" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
