@@ -1,22 +1,42 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link2, ShieldCheck, Lock, ArrowRight, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Footer from '@/components/Footer'
+import { createBrowserClient } from '@supabase/ssr'
 
 const Q_LOGO = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='black'/%3E%3Ctext x='50' y='74' font-family='sans-serif' font-size='70' font-weight='900' fill='white' text-anchor='middle'%3EQ%3C/text%3E%3C/svg%3E"
 
 export default function Home() {
   const [url, setUrl] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
 
-  const handleUnlock = () => {
-    if (url) {
-      router.push(`/login?url=${encodeURIComponent(url)}`)
+  // Initialize Supabase to silently check if the user is already logged in
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) setIsLoggedIn(true)
+    }
+    checkUser()
+  }, [supabase.auth])
+
+  const handleAction = () => {
+    if (isLoggedIn) {
+      router.push('/dashboard')
     } else {
-      router.push('/login')
+      if (url) {
+        router.push(`/login?url=${encodeURIComponent(url)}`)
+      } else {
+        router.push('/login')
+      }
     }
   }
 
@@ -31,10 +51,19 @@ export default function Home() {
           <span className="font-semibold text-lg tracking-tight">Qreative</span>
         </div>
         <div className="flex gap-4 items-center">
-          <button onClick={() => router.push('/login')} className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">Log In</button>
-          <button onClick={() => router.push('/login')} className="px-4 py-2 text-sm font-medium bg-white text-black rounded-md hover:bg-gray-200 transition-colors flex items-center gap-2">
-            Sign Up Free
-          </button>
+          {/* Smart Navbar: Changes based on login status */}
+          {isLoggedIn ? (
+            <button onClick={() => router.push('/dashboard')} className="px-4 py-2 text-sm font-medium bg-white text-black rounded-md hover:bg-gray-200 transition-colors flex items-center gap-2">
+              Dashboard <ArrowRight size={16} />
+            </button>
+          ) : (
+            <>
+              <button onClick={() => router.push('/login')} className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors">Log In</button>
+              <button onClick={() => router.push('/login')} className="px-4 py-2 text-sm font-medium bg-white text-black rounded-md hover:bg-gray-200 transition-colors flex items-center gap-2">
+                Sign Up Free
+              </button>
+            </>
+          )}
         </div>
       </nav>
 
@@ -76,10 +105,13 @@ export default function Home() {
               />
             </div>
             
-            <div className="mt-5 p-3.5 bg-red-950/20 border border-red-900/30 rounded-xl flex gap-3 text-sm text-red-400/80 leading-relaxed">
-              <Lock className="shrink-0 mt-0.5" size={16} />
-              <p>For your security, anonymous downloads are strictly prohibited. Sign in to verify your identity and download your secure Safe-Scan code.</p>
-            </div>
+            {/* Hide the red security warning if they are already signed in */}
+            {!isLoggedIn && (
+              <div className="mt-5 p-3.5 bg-red-950/20 border border-red-900/30 rounded-xl flex gap-3 text-sm text-red-400/80 leading-relaxed">
+                <Lock className="shrink-0 mt-0.5" size={16} />
+                <p>For your security, anonymous downloads are strictly prohibited. Sign in to verify your identity and download your secure Safe-Scan code.</p>
+              </div>
+            )}
           </div>
 
           <div className="w-full md:w-80 bg-[#0a0a0a] border border-gray-800 rounded-2xl p-6 flex flex-col items-center justify-center relative overflow-hidden group">
@@ -96,16 +128,20 @@ export default function Home() {
 
             <div className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-500 ${url.length > 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
                <div className="w-14 h-14 bg-black border border-gray-700 rounded-full flex items-center justify-center mb-3 shadow-2xl">
-                 <Lock size={24} className="text-white" />
+                 {isLoggedIn ? <ShieldCheck size={24} className="text-white" /> : <Lock size={24} className="text-white" />}
                </div>
+               
+               {/* Smart Button Text based on login status */}
                <p className="text-white font-bold text-lg mb-1">Preview Generated</p>
-               <p className="text-gray-400 text-xs mb-5 px-8 text-center">Account required to export</p>
+               <p className="text-gray-400 text-xs mb-5 px-8 text-center">
+                 {isLoggedIn ? 'Ready to secure and export' : 'Account required to export'}
+               </p>
                
                <button 
-                onClick={handleUnlock}
+                onClick={handleAction}
                 className="flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)]"
                >
-                 Sign In & Download <ArrowRight size={16} />
+                 {isLoggedIn ? 'Go to Dashboard' : 'Sign In & Download'} <ArrowRight size={16} />
                </button>
             </div>
           </div>
