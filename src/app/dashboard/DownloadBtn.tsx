@@ -1,4 +1,5 @@
 'use client'
+
 import AdBanner from '@/components/AdBanner'
 import { useState, useEffect } from 'react'
 import { Download, Printer, X, FileImage, FileCode2 } from 'lucide-react'
@@ -41,7 +42,7 @@ export default function DownloadBtn({ qrId, destination, autoOpen = false }: { q
     img.src = `data:image/svg+xml;base64,${btoa(svgData)}`
   }
 
-  // 2. NEW: VECTOR SVG EXPORT (For Pro Designers & Print Shops)
+  // 2. VECTOR SVG EXPORT (For Pro Designers & Print Shops)
   const handleDownloadSVG = () => {
     const svg = document.getElementById(`high-res-qr-${qrId}`)
     if (!svg) return
