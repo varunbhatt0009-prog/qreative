@@ -1,5 +1,5 @@
 'use client'
-
+import Footer from '@/components/Footer'
 import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link2, ShieldCheck, Lock, ArrowRight, Sparkles } from 'lucide-react'
@@ -110,6 +110,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <Footer/>
     </div>
   )
 }
