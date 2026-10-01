@@ -1,29 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: {
-    default: "Qreative",
-    template: "%s · Qreative",
-  },
-  description: "A premium creative workspace. Sign in with Google.",
+  title: "Qreative - Professional QR Code Generator",
+  description: "Generate high-resolution PNG and SVG QR codes instantly.",
 };
 
 export default function RootLayout({
@@ -32,16 +16,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
-    >
-      <body
-        suppressHydrationWarning
-        className="min-h-screen bg-[#050505] text-white flex flex-col antialiased selection:bg-green-900 selection:text-green-400"
-      >
-        {children}
-      </body>
+    <html lang="en">
+      <head>
+        {/* Google AdSense Verification Script */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4259596276772805"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
