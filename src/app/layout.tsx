@@ -26,13 +26,20 @@ export const metadata: Metadata = {
   description: "A premium creative workspace. Sign in with Google.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-[#050505] text-white flex flex-col antialiased selection:bg-green-900 selection:text-green-400"
+      >
         {children}
       </body>
     </html>

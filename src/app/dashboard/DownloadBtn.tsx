@@ -1,5 +1,5 @@
 'use client'
-
+import AdBanner from '@/components/AdBanner'
 import { useState, useEffect } from 'react'
 import { Download, Printer, X, FileImage, FileCode2 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
@@ -125,6 +125,9 @@ export default function DownloadBtn({ qrId, destination, autoOpen = false }: { q
             </div>
 
             <div className="flex flex-col gap-3">
+              {/* NATIVE AD CONTAINER - Placed right where the user is looking */}
+              <AdBanner adSlot="DOWNLOAD_MODAL_SLOT" />
+
               <div className="grid grid-cols-2 gap-3">
                 <button onClick={handleDownloadPNG} className="py-4 bg-gray-900 hover:bg-gray-800 border border-gray-700 text-white font-bold rounded-xl transition-colors flex flex-col items-center gap-2">
                   <FileImage size={24} className="text-blue-400" /> 
