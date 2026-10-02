@@ -26,7 +26,15 @@ export default function Home() {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (session) setIsLoggedIn(true)
+      if (session) {
+        setIsLoggedIn(true)
+        // Retrieve the lost URL after login!
+        const savedUrl = localStorage.getItem('pendingQRUrl')
+        if (savedUrl) {
+          setUrl(savedUrl) // Put the URL back in the input box
+          localStorage.removeItem('pendingQRUrl') // Clean it up
+        }
+      }
     }
     checkUser()
   }, [supabase.auth])
