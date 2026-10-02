@@ -27,18 +27,14 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // Silently check if they have an active session in the background
-  const { data: { user } } = await supabase.auth.getUser()
+  // Silently refresh their session in the background
+  await supabase.auth.getUser()
 
-  // ZERO-FLASH ROUTING
-  if (user && request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
+  // The strict homepage redirect has been permanently removed so users can access the generator.
 
   return response
 }
 
-// Tell the bouncer to only actively watch the homepage
 export const config = {
   matcher: ['/'],
 }
