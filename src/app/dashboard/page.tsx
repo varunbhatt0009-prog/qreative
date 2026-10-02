@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic' // CRITICAL: Kills Next.js caching to prevent data leaks between users
+export const revalidate = 0
+
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -33,6 +36,7 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
     .eq('id', user.id)
     .single()
 
+  // Strict query: Only fetch codes belonging to the authenticated user
   const { data: qrCodes } = await supabase
     .from('qr_codes')
     .select('*')
@@ -48,14 +52,12 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
       <nav className="w-full border-b border-gray-900 p-4 flex justify-between items-center bg-black sticky top-0 z-50">
         <div className="flex items-center gap-8">
           
-          {/* Logo routes to Home */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-white text-black rounded-md flex items-center justify-center font-bold text-xl">Q</div>
             <span className="font-semibold text-lg tracking-tight hidden sm:block">Qreative</span>
           </Link>
           
           <div className="hidden md:flex items-center gap-6 text-sm font-semibold">
-            {/* Cleaned up Ghost Button */}
             <Link href="/" className="text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
               <HomeIcon size={16} /> Home
             </Link>
@@ -72,7 +74,7 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
             </div>
           )}
           
-          <span className="text-sm text-gray-400 hidden sm:block ml-2">{user.email}</span>
+          <span className="text-sm text-gray-400 hidden sm:block ml-2 truncate max-w-[200px]">{user.email}</span>
           <form action="/auth/signout" method="post">
             <button className="text-sm font-medium text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors">
               <LogOut size={16} /> Sign Out
@@ -111,16 +113,18 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
         <div className="md:col-span-2 space-y-6">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-2xl font-bold tracking-tight">Your Secure Codes</h2>
-            <Link href="/dashboard/create" className="px-4 py-2 bg-green-500 text-black font-semibold rounded-lg hover:bg-green-400 transition-colors flex items-center gap-2 text-sm">
-              <Plus size={16} /> New Safe-Scan Code
+            <Link href="/dashboard/create" className="px-4 py-2 bg-green-500 text-black font-semibold rounded-lg hover:bg-green-400 transition-colors flex items-center gap-2 text-sm shrink-0">
+              <Plus size={16} /> New Code
             </Link>
           </div>
 
           {qrCodes && qrCodes.length > 0 ? (
             <div className="space-y-4">
               {qrCodes.map((code) => (
-                <div key={code.id} className="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col sm:flex-row gap-4 sm:items-center justify-between group hover:border-gray-700 transition-colors">
-                  <div className="flex items-center gap-4">
+                <div key={code.id} className="bg-[#0a0a0a] border border-gray-800 rounded-2xl p-5 shadow-lg flex flex-col sm:flex-row gap-4 sm:items-center justify-between group hover:border-gray-700 transition-colors w-full overflow-hidden">
+                  
+                  {/* LEFT SIDE: Info (Added flex-1 and min-w-0 to fix overflow) */}
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
                     <div className="bg-white p-2 rounded-xl shrink-0">
                       <QRCodeSVG 
                         id={`qr-${code.safe_scan_code}`}
@@ -132,19 +136,27 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
                       />
                     </div>
                     
-                    <div className="overflow-hidden">
+                    {/* The text container forces truncation without expanding */}
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="px-2 py-0.5 bg-green-950 text-green-400 border border-green-900/50 rounded text-[10px] font-bold uppercase tracking-wider">Protected</span>
-                        <span className="text-gray-500 text-xs font-mono">ID: {code.safe_scan_code}</span>
+                        <span className="px-2 py-0.5 bg-green-950 text-green-400 border border-green-900/50 rounded text-[10px] font-bold uppercase tracking-wider shrink-0">Protected</span>
+                        <span className="text-gray-500 text-xs font-mono truncate">ID: {code.safe_scan_code}</span>
                       </div>
-                      <p className="text-white font-medium truncate mb-1">{code.destination_url}</p>
-                      <a href={`https://qreativeapp.vercel.app/s/${code.safe_scan_code}`} target="_blank" rel="noreferrer" className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors">
-                        <LinkIcon size={12} /> qreativeapp.vercel.app/s/{code.safe_scan_code}
+                      
+                      {/* Fixed Truncation for long URLs */}
+                      <p className="text-white font-medium truncate mb-1" title={code.destination_url}>
+                        {code.destination_url}
+                      </p>
+                      
+                      <a href={`https://qreativeapp.vercel.app/s/${code.safe_scan_code}`} target="_blank" rel="noreferrer" className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors truncate">
+                        <LinkIcon size={12} className="shrink-0" /> 
+                        <span className="truncate">qreativeapp.vercel.app/s/{code.safe_scan_code}</span>
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex flex-col gap-2 min-w-[140px]">
+                  {/* RIGHT SIDE: Stats (Added shrink-0 so it NEVER gets pushed out of bounds) */}
+                  <div className="flex flex-col gap-2 min-w-[140px] shrink-0">
                     <div className="flex flex-col items-end bg-black/50 p-3 rounded-lg border border-gray-900">
                       <span className="text-2xl font-bold text-white leading-none mb-1">{code.scans}</span>
                       <span className="text-[10px] text-gray-500 font-semibold uppercase tracking-widest">Total Scans</span>
