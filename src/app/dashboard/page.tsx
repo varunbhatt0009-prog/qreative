@@ -4,11 +4,12 @@ export const revalidate = 0
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { ShieldCheck, Plus, LogOut, Clock, Link as LinkIcon, Lock, Home as HomeIcon, Calendar } from 'lucide-react'
+import { ShieldCheck, Plus, LogOut, Clock, Link as LinkIcon, Lock, Home as HomeIcon } from 'lucide-react'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
 import DownloadBtn from './DownloadBtn'
 import CodeActions from './CodeActions'
+import LocalTime from './LocalTime'
 
 const Q_LOGO = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='black'/%3E%3Ctext x='50' y='74' font-family='sans-serif' font-size='70' font-weight='900' fill='white' text-anchor='middle'%3EQ%3C/text%3E%3C/svg%3E"
 
@@ -118,12 +119,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
           {qrCodes && qrCodes.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
               {qrCodes.map((code) => {
-                // Format the created_at date safely
-                const codeDate = new Date(code.created_at)
-                const formattedDate = codeDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                const formattedTime = codeDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-                
-                // Handle missing is_active flag for older codes gracefully
                 const isCodeActive = code.is_active !== false
 
                 return (
@@ -150,9 +145,9 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
                               <span className="px-2 py-0.5 bg-yellow-950 text-yellow-500 border border-yellow-900/50 rounded text-[10px] font-bold uppercase tracking-wider shrink-0">Paused</span>
                             )}
                             <span className="text-gray-500 text-xs font-mono truncate">ID: {code.safe_scan_code}</span>
-                            <span className="text-gray-600 text-xs flex items-center gap-1 shrink-0 ml-auto sm:ml-2">
-                              <Calendar size={12}/> {formattedDate} at {formattedTime}
-                            </span>
+                            
+                            {/* NEW: Smart Client-Side Timezone Component */}
+                            <LocalTime timestamp={code.created_at} />
                           </div>
                           
                           <p className={`font-medium truncate mb-1 ${!isCodeActive ? 'text-gray-500 line-through' : 'text-white'}`} title={code.destination_url}>
@@ -179,7 +174,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
                       </div>
                     </div>
                     
-                    {/* New Action Buttons (Pause & Delete) */}
                     <CodeActions id={code.id} isActive={isCodeActive} />
 
                   </div>
