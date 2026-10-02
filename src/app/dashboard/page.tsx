@@ -4,7 +4,7 @@ export const revalidate = 0
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { ShieldCheck, Plus, LogOut, Clock, Link as LinkIcon, Lock, Home as HomeIcon } from 'lucide-react'
+import { ShieldCheck, Plus, LogOut, Clock, Link as LinkIcon, Lock, Home as HomeIcon, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
 import DownloadBtn from './DownloadBtn'
@@ -52,14 +52,18 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
       
       <nav className="w-full border-b border-gray-900 p-4 flex justify-between items-center bg-black sticky top-0 z-50">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          
+          {/* FIX: Replaced <Link> with <a> to force hard navigation to the homepage */}
+          <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-8 h-8 bg-white text-black rounded-md flex items-center justify-center font-bold text-xl">Q</div>
             <span className="font-semibold text-lg tracking-tight hidden sm:block">Qreative</span>
-          </Link>
+          </a>
+          
           <div className="hidden md:flex items-center gap-6 text-sm font-semibold">
-            <Link href="/" className="text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
+            {/* FIX: Replaced <Link> with <a> to force hard navigation */}
+            <a href="/" className="text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
               <HomeIcon size={16} /> Home
-            </Link>
+            </a>
             <Link href="/dashboard" className="text-white flex items-center gap-1.5 border-b-2 border-green-500 pb-0.5">
               <ShieldCheck size={16} /> Dashboard
             </Link>
@@ -146,7 +150,6 @@ export default async function Dashboard(props: { searchParams: Promise<{ [key: s
                             )}
                             <span className="text-gray-500 text-xs font-mono truncate">ID: {code.safe_scan_code}</span>
                             
-                            {/* NEW: Smart Client-Side Timezone Component */}
                             <LocalTime timestamp={code.created_at} />
                           </div>
                           
