@@ -9,7 +9,7 @@ import Link from 'next/link'
 export default function CreateCode() {
   const [url, setUrl] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState('') // Proactive error handling
+  const [error, setError] = useState('') 
   const router = useRouter()
 
   const supabase = createBrowserClient(
@@ -17,7 +17,6 @@ export default function CreateCode() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  // Generate a random 6-character Safe-Scan ID
   const generateCode = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
     return Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('')
@@ -25,6 +24,11 @@ export default function CreateCode() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // CRITICAL RACE CONDITION FIX: 
+    // If the button was already clicked and is processing, physically reject any extra clicks.
+    if (isSubmitting) return; 
+    
     setError('')
 
     if (!url) {
@@ -32,22 +36,20 @@ export default function CreateCode() {
       return
     }
 
-    // Basic URL validation
     let finalUrl = url
     if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
       finalUrl = 'https://' + finalUrl
     }
 
     try {
+      // Instantly lock the form
       setIsSubmitting(true)
 
-      // 1. Ensure the user is actually authenticated before trying to insert
       const { data: { user }, error: authError } = await supabase.auth.getUser()
       if (authError || !user) throw new Error("Authentication error. Please log out and log back in.")
 
       const safeScanCode = generateCode()
 
-      // 2. Insert into the database with explicit user_id mapping
       const { error: insertError } = await supabase
         .from('qr_codes')
         .insert({
@@ -63,15 +65,14 @@ export default function CreateCode() {
         throw new Error(insertError.message || "The database rejected the code creation.")
       }
 
-      // 3. Success! Force a router refresh so the new code appears, then redirect to Dashboard
       router.refresh() 
       router.push(`/dashboard?newCode=${safeScanCode}`)
 
     } catch (err: any) {
       console.error(err)
       setError(err.message || "An unexpected error occurred while generating.")
-    } finally {
-      setIsSubmitting(false)
+      // Only unlock the button if there was a failure. On success, it stays locked until redirect.
+      setIsSubmitting(false) 
     }
   }
 
@@ -79,12 +80,10 @@ export default function CreateCode() {
     <div className="min-h-screen bg-[#050505] text-white font-sans p-6 md:p-12">
       <div className="max-w-2xl mx-auto">
         
-        {/* Back Link */}
         <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-medium mb-8">
           <ArrowLeft size={18} /> Back to Hub
         </Link>
 
-        {/* Main Card */}
         <div className="bg-[#0a0a0a] border border-gray-800 rounded-3xl p-6 md:p-10 shadow-2xl">
           
           <div className="flex items-start gap-4 mb-8">
@@ -101,7 +100,6 @@ export default function CreateCode() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             
-            {/* Error Message Box */}
             {error && (
               <div className="bg-red-950/30 border border-red-900/50 p-4 rounded-xl flex items-start gap-3">
                 <AlertCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
