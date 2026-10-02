@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { 
   Link2, ShieldCheck, Lock, Sparkles, Smartphone, 
-  MessageCircle, Instagram, Youtube, FileText, 
-  LayoutGrid, Download, Loader2, CheckCircle2 
+  MessageCircle, Camera, LayoutGrid, Download, Loader2 
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Footer from '@/components/Footer'
@@ -32,7 +31,6 @@ export default function Home() {
     checkUser()
   }, [supabase.auth])
 
-  // THE FIX: Actual generation logic with try/catch, loading states, and state saving
   const handleGenerateAndDownload = async () => {
     if (!url) {
       alert("Please enter a destination URL first.");
@@ -40,7 +38,7 @@ export default function Home() {
     }
 
     if (!isLoggedIn) {
-      // Save their work before kicking them to login (For Phase 2)
+      // Save their work before kicking them to login
       localStorage.setItem('pendingQRUrl', url);
       router.push('/login');
       return;
@@ -49,7 +47,6 @@ export default function Home() {
     try {
       setIsGenerating(true);
       
-      // Artificial delay to show processing UI (feels more professional)
       await new Promise(resolve => setTimeout(resolve, 800));
 
       const svgElement = document.getElementById('qr-code-svg');
@@ -125,7 +122,7 @@ export default function Home() {
                 <button className="flex items-center gap-2 px-4 py-2 bg-gray-800/50 border border-green-500/50 text-green-400 rounded-lg text-sm font-medium"><Link2 size={16}/> Website URL</button>
                 <button className="flex items-center gap-2 px-4 py-2 bg-transparent border border-gray-800 text-gray-400 hover:bg-gray-800/30 rounded-lg text-sm font-medium transition-colors"><Smartphone size={16}/> UPI</button>
                 <button className="flex items-center gap-2 px-4 py-2 bg-transparent border border-gray-800 text-gray-400 hover:bg-gray-800/30 rounded-lg text-sm font-medium transition-colors"><MessageCircle size={16}/> WhatsApp</button>
-                <button className="flex items-center gap-2 px-4 py-2 bg-transparent border border-gray-800 text-gray-400 hover:bg-gray-800/30 rounded-lg text-sm font-medium transition-colors"><Instagram size={16}/> Instagram</button>
+                <button className="flex items-center gap-2 px-4 py-2 bg-transparent border border-gray-800 text-gray-400 hover:bg-gray-800/30 rounded-lg text-sm font-medium transition-colors"><Camera size={16}/> Instagram</button>
               </div>
 
               <div className="relative group">
