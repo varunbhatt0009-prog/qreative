@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qreative Access</title>
+    <style>
+        body { 
+            background-color: #0d1117; 
+            color: #c9d1d9; 
+            font-family: 'Courier New', Courier, monospace; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container {
+            text-align: center;
+            background: #161b22;
+            padding: 40px;
+            border-radius: 10px;
+            border: 1px solid #30363d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        input, button { 
+            padding: 12px; 
+            margin: 10px 0; 
+            font-size: 16px; 
+            border-radius: 5px; 
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input {
+            border: 1px solid #30363d; 
+            background: #0d1117; 
+            color: #58a6ff; 
+        }
+        button { 
+            cursor: pointer; 
+            background: #238636; 
+            color: white; 
+            border: none; 
+            font-weight: bold;
+        }
+        button:hover { background: #2ea043; }
+        #downloadSection { display: none; margin-top: 25px; }
+        a { 
+            text-decoration: none; 
+            color: white; 
+            background: #1f6feb; 
+            padding: 15px 30px; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        a:hover { background: #388bfd; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Secure Gateway</h2>
+        <input type="password" id="pinCode" placeholder="Enter Access PIN">
+        <button onclick="checkPin()">Verify</button>
+
+        <div id="downloadSection">
+            <!-- The 'download' attribute forces the PC to download the file rather than opening it in a new tab -->
+            <a href="lab-doc.pdf" download="Lab_Internal_Document.pdf">Download Secure PDF</a>
+        </div>
+    </div>
+
+    <script>
+        function checkPin() {
+            var pin = document.getElementById('pinCode').value;
+            // The PIN is set to 1706. Change it here if you want a different one.
+            if(pin === "1706") { 
+                document.getElementById('downloadSection').style.display = "block";
+            } else {
+                alert("Access Denied: Invalid PIN");
+            }
+        }
+        
+        // Allow pressing 'Enter' to submit the PIN
+        document.getElementById("pinCode").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkPin();
+            }
+        });
+    </script>
+</body>
+</html>
